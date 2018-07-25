@@ -1,0 +1,155 @@
+2.3.1
+A = [3, 41, 52, 26, 38, 57, 9, 49]
+1. Делим массив L = [3, 41, 52, 26]; R = [38, 57, 9, 49];
+2. Делим массивы, получившиеся на этапе 1: LL = [3, 41]; RL = [52, 26]; LR = [38, 57]; RR = [9, 49];
+3. Делим массивы, получившиеся на этапе 2Ж: LLL = [3]; RLL = [41]; LRL = [52]; RRL = [26]; LLR = [38]; RLR = [57]; LRR = [9]; RRR = [49];
+4. Сливаем получившиеся массивы на этапе 3 на месте: A = [3, 41, 26, 52, 38, 57, 9, 49];
+5. Сливаем массивы с этапа 2: A = [3, 26, 41, 52, 9, 38, 49, 57];
+6. Сливаем массивы, получившиеся на этапе 1: A = [3, 9, 26, 38, 41, 49, 52, 57].
+
+2.3.2
+
+void merge(int * arr, int p, int q, int r) {
+	int n1 = q - p + 1;
+	int n2 = r - q;
+	int * L = new int[n1];
+	int * R = new int[n2];
+	for (int i = 0; i < n1; ++i)
+		L[i] = arr[p + i];
+	for (int i = 0; i < n2; ++i)
+		R[i] = arr[q + i + 1];
+	int i = 0;
+	int j = 0;
+	while (i < n1 && j < n2) {
+		if (L[i] <= R[j]) {
+			arr[p + i + j] = L[i];
+			i++;
+		}
+		else {
+			arr[p + i + j] = R[j];
+			j++;
+		}
+	}
+	if (i == n1)
+		for (int k = p + i + j; k <= r; ++k) {
+			arr[k] = R[j];
+			j++;
+		}
+	else
+		for (int k = p + i + j; k <= r; ++k) {
+			arr[k] = L[i];
+			i++;
+		}
+}
+
+2.3.3
+
+T(n) =	{2,				n = 2
+		{2T(n/2) + n,	n = 2^k, k > 1
+
+T(n) = n lg n
+T(2) = 2 = 2 * lg 2 = 2 -- верно (база индукции)
+Пусть T(n) = n lg n (n = 2^k) = k * 2^k
+(n = 2^(k + 1)) Тогда T(n) = 2T(n/2) + n = 2T(2^k) + 2^(k + 1) = 2k * 2^k + 2* 2^k = (k + 1)* 2^(k + 1) qed
+
+2.3.4
+Сортировку вставкой можно представить как рекуррентную сортировку A[0, n - 1] и вставку n элемента, рекурентность:
+
+T(n) =	{Theta(1),					n = 1
+		{Theta(n - 1) + Theta(n),	n > 1
+
+2.3.5
+Весьма очевидно, что бинарный поиск работает сильно быстрее линейного, за Theta(lg n), потому что в наихудшем случае из отортированного массива надо будет сделатьтолько lg n проверок на соответствие value.
+
+2.3.6
+При использовании в сортировке вставками бинарного поиска можно улучшить время сравнений до n lg n, но из-за количества перестановок, которых будет даже в среднем случак j/2 работа алгоритма в целом будет осуществляться за n lg n;
+
+2.3.7
+
+#include <iostream>
+
+void merge(int * arr, int p, int q, int r) {
+	int n1 = q - p + 1;
+	int n2 = r - q;
+	int * L = new int[n1];
+	int * R = new int[n2];
+	for (int i = 0; i < n1; ++i)
+		L[i] = arr[p + i];
+	for (int i = 0; i < n2; ++i)
+		R[i] = arr[q + i + 1];
+	int i = 0;
+	int j = 0;
+	while (i < n1 && j < n2) {
+		if (L[i] <= R[j]) {
+			arr[p + i + j] = L[i];
+			i++;
+		}
+		else {
+			arr[p + i + j] = R[j];
+			j++;
+		}
+	}
+	if (i == n1)
+		for (int k = p + i + j; k <= r; ++k) {
+			arr[k] = R[j];
+			j++;
+		}
+	else
+		for (int k = p + i + j; k <= r; ++k) {
+			arr[k] = L[i];
+			i++;
+		}
+}
+
+void merge_sort(int * arr, int p, int r) {
+	if (p < r) {
+		int q  = (p + r) / 2;
+		merge_sort(arr, p, q);
+		merge_sort(arr, q + 1, r);
+		merge(arr, p, q, r);
+	}
+}
+
+bool binary_search(int * arr, int value, int low, int high) {
+	int mid = 0;
+	while (low <= high) {
+		mid = (high + low) / 2;
+		if (value == arr[mid])
+			return true;
+		if (value > arr[mid]) {
+			low = mid + 1;
+		}
+		else {
+			high = mid - 1;
+		}
+	}
+	return false;
+}
+
+bool search_sum(int * arr, int size, int value) {
+	for (int  i = 0; i < size; ++i)
+		if (binary_search(arr, value - arr[i], i + 1, size - 1))
+			return true;
+	return false;
+}
+
+int main() {
+	int size = 0;
+	std:: cin >> size;
+	int arr[size] = {};
+	for (int i = 0; i < size; ++i) 
+		std:: cin >> arr[i];
+
+	int value = 0;
+	std:: cin >> value;
+
+	merge_sort(arr, 0, size - 1);
+
+ 	if (search_sum(arr, size, value)) {
+ 		std:: cout << "YES\n";
+ 	} else {
+ 		std:: cout << "NO\n";
+ 	}
+
+ 	return 0;
+}
