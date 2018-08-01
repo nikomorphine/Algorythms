@@ -1,5 +1,0 @@
-4.4.6 
-T(n) = Omega(n lg n)
-
-4.4.9
-T(n) = Theta(n lg n)
