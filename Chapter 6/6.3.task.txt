@@ -1,0 +1,28 @@
+c.
+Extract_min(Y, i, j)
+	min = Y [i, j]
+		if Y [i, j + 1] = Y [i + 1, j] = ∞ then
+			Y [i, j] = ∞
+			return min
+	if Y [i, j + 1] < Y [i + 1, j] then
+		Y [i, j] = Y [i, j + 1]
+		Y[i, j + 1] = min
+		return Extract_min(y,i,j+1)
+	else
+		Y [i, j] = Y [i + 1, j]
+		Y [i + 1, j] = min
+		return Extract_min(y,i+1,j)
+
+d.
+Insert_element(Y, key)
+	i = m, j = n
+	Y [i, j] = key
+	while Y [i − 1, j] > Y [i, j] or Y [i, j − 1] > Y [i, j] do
+		if Y [i − 1, j] < Y [i, j − 1] then
+			Swap Y [i, j] and Y [i, j − 1]
+			j−−
+		else
+			Swap Y [i, j] and Y [i − 1, j]
+			i--
+
+e. Нужно расположить элементы в таблице Юнга, вызвав для каждого элемента процедуру из пункта d, а затем собрать минимальные элемента для каждого из них, вызвав процедуру c.
