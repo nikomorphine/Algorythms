@@ -1,0 +1,48 @@
+a.
+Пусть у нас будет массив чисел, тогда введем новые функции parent и child:
+parent(i) = floor(i / d)
+child(i, k) = di - d + 1 + k -- выдает k-го ребенка (дочерний узел)
+
+b.
+Высота d-арной перамиды это floor(log_d(n))
+
+c.
+extract_dmax(A)
+	if A.heap − size < 1 then
+		error “heap underflow”
+	max = A[1]
+	A[1] = A[A.heap − size]
+	A.heap − size -= 1
+	dmax_heapify(A,1)
+
+dmax-heapify(A, i)
+	largest = i
+	for k = 1 to d do
+		if child(k, i) ≤ A.heap − size and A[child(k, i)] > A[i] then
+			if A[child(k, i)] > largest then
+		largest = A[child(k, i)]r
+	if largest != i then
+		exchange A[i] with A[largest]
+		dmax_hepify(A, largest)
+
+Время работы будет O(d log_d(n))
+
+d.
+dinsert(A, key)
+	A.heap-size += 1
+	A[A.heap-size] = key
+	i = A.heap-size
+	while i > 1 and A[parent(i) < A[i] do
+		exchange A[i] with A[parent(i)]
+	i = parent(i)
+
+Время работы будет O(log_d(n))
+
+e.
+dincrease_key(A, i, key)
+	if key < A[i] then
+		error “new key is smaller than current key ”
+	A[i] = key
+	while i > 1 and A[parent(i) < A[i] do
+		exchange A[i] with A[parent(i)]
+		i = parent(i)
